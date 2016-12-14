@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="wrapper">
+        <div id="container">
+            <div id="welcome">
+                <h1>My Work</h1>
+            </div>
+            <div id="connect">
+                <form action="login" method="POST">
+                    <p class="ms-font-x1">Log in to access My Work</p>
+                    <button class="ms-Button">
+                        <span class="ms-Button-label">Connect to Office 365</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

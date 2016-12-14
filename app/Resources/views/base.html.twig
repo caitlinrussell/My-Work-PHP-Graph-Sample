@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}My Work{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <script   src="https://code.jquery.com/jquery-3.1.0.js"   integrity="sha256-slogkvB1K3VOkzAI8QITxV3VzpOnkeNVsKvtkYLMjfk="   crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="{{ asset('bundles/framework/css/body.css')}}">
+        <link rel="stylesheet" href="{{ asset('bundles/framework/css/custom.css')}}">
+        <link rel="stylesheet" href="{{ asset('bundles/office-ui-fabric-2.6.1/css/fabric.css')}}">
+        <link rel="stylesheet" href="{{ asset('bundles/office-ui-fabric-2.6.1/css/fabric.components.css')}}">
+        <script src="{{ asset('bundles/office-ui-fabric-2.6.1/js/jquery.fabric.js') }}"></script>
+    </head>
+    <body>
+        {% block navigation %}
+            <div class="ms-NavBar" id="header-nav">
+                <div class="ms-NavBar-openMenu js-openMenu"><i class="ms-Icon ms-Icon--menu"></i></div>
+                <div class="ms-Overlay"></div>
+                <ul class="ms-NavBar-items ms-fontColor-white">
+                    <li class="ms-NavBar-item"><a class="ms-NavBar-link" href="/dashboard">My Work</a></li>
+                </ul>
+            </div>
+        {% endblock %}
+        {% block body %}{% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

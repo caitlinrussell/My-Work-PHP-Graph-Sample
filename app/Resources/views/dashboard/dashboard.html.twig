@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+	<div class="wrapper">
+		<h1>Welcome back, {{ name }}!</h1>
+
+		<!-- Form for submitting a new work item -->
+		<div class="my-work-form ms-bgColor-greenLight">
+			<h2>What are you working on?</h2>
+			<form action="dashboard/create" method="POST">
+				<div class="ms-TextField">
+					<input class="ms-TextField-field" type="text" name="description" placeholder="Cloning yetis">
+				</div>
+
+				<div class="ms-ChoiceFieldGroup">
+					<div class="ms-ChoiceFieldGroup-title"><label class="ms-Label">Add a doc</label></div>
+					{% for doc in docs %}
+						<div class="ms-ChoiceField">
+							<input class="ms-ChoiceField-input" type="radio" id="item-{{ doc.id }}" name="file-addition" value="{{ doc.title }}.{{ doc.fileType }}">
+							<label for="item-{{ doc.id }}" class="ms-ChoiceField-field">
+								<span class="ms-Label"><img class="file-icon" src="img/{{ doc.fileIcon }}" />{{ doc.title }}</span>
+							</label>
+						</div>
+					{% endfor %}
+				</div>
+				<br />
+				<button class="ms-Button">Submit</button>
+			</form>
+		</div>
+		<br />
+
+		<h2>Your Work</h2>
+		<ul class="ms-List work-items">
+
+			<!-- Getting started instructions -->
+			{% if workItems|length < 1 %}
+			<h3>No work items yet. Get crackin'!</h3>
+			{% else %}
+				<h3>Click an item to complete it</h3>
+			{% endif %}
+
+			{% for item in workItems %}
+				<li class="personal-work work-item ms-ListItem is-selectable" id="item-{{ item.id }}">
+
+					<!-- Show the Office UI Fabric Persona component -->
+					<div class="ms-Persona">
+					  <div class="ms-Persona-imageArea">
+					    <div class="ms-Persona-initials ms-Persona-initials--blue"></div>
+					    <img class="ms-Persona-image" src="data:image/*;base64,{{ avatar }}">
+					  </div>
+					  <div class="ms-Persona-details">
+					    <div class="ms-Persona-primaryText">{{ name }}</div>
+					  </div>
+					</div>
+
+					<span class="ms-ListItem-secondaryText item-description">{{ item.description }}</span>
+					<span class="ms-ListItem-metaText">{{ item.createdAt }}</span>
+
+					<!-- If there is a OneDrive file associated with this work item, display its information -->
+					{% if item.associatedFile.title != null %}
+						<span class="ms-ListItem-tertiaryText file-info"><img class="file-icon" src="img/{{ item.associatedFile.image }}" /> {{ item.associatedFile.title }}</span>
+					{% endif %}
+					<div class="ms-ListItem-selectionTarget js-toggleSelection"></div>
+				</li>
+			{% endfor %}
+		</ul>
+
+		<!-- Your team's work items -->
+		<h2>Your Team</h2>
+		<ul class="ms-List work-items">
+			<!-- Getting started instructions -->
+			{% if teamItems|length < 1 %}
+				<h3>Your team hasn't started logging work items yet. Start nagging them!</h3>
+			{% endif %}
+
+			{% for item in teamItems %}
+				<li class="work-item ms-ListItem">
+
+				<!-- Show the Office UI Fabric Persona component -->
+				<div class="ms-Persona">
+				  <div class="ms-Persona-imageArea">
+				    <div class="ms-Persona-initials ms-Persona-initials--blue"></div>
+				    <img class="ms-Persona-image" src="data:image/*;base64,{{ item.avatar }}"></div>
+				  <div class="ms-Persona-details">
+				    <div class="ms-Persona-primaryText">{{ item.name }}</div>
+				  </div>
+				</div>
+
+				<span class="ms-ListItem-secondaryText item-description">{{ item.description }}</span>
+				<span class="ms-ListItem-metaText">{{ item.createdAt }}</span>
+
+				<!-- If there is a OneDrive file associated with this work item, display its information -->
+				{% if item.associatedFile.title != null %}
+					<span class="ms-ListItem-tertiaryText file-info"><img class="file-icon" src="img/{{ item.associatedFile.image }}" /> {{ item.associatedFile.title }}</span>
+				{% endif %}
+				<div class="ms-ListItem-selectionTarget js-toggleSelection"></div>
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+
+<!--
+	Script to complete and hide items that are checked off
+-->
+    <script>
+    jQuery('.personal-work').click(function() {
+    	$(this).toggleClass('is-selected');
+    	var itemId = $(this).attr('id');
+    	itemId = itemId.substring(5);
+
+    	jQuery.ajax({
+    		type: 'post',
+    		url: "dashboard/complete",
+    		data: { id: itemId },
+    		dataType: 'json',
+    	}).done(function() {
+    		jQuery('#item-'+itemId).slideUp();
+    	});
+    });
+    </script>
+    
+{% endblock %}
